@@ -34,6 +34,18 @@ int draw_line() {
     return 0;
 }
 
-int main(int argc, char** argv) {
+
+int draw_triangle() {
+	TGAImage frame(200, 200, TGAImage::RGB);
+	Vec2i pts[3] = { Vec2i(10, 10), Vec2i(100, 10), Vec2i(50, 100) };
+	DrawGeo drawGeo;
+	drawGeo.drawTriangle(pts, frame, TGAColor(255, 0, 0, 0));
+
+    frame.flip_vertically(); // to place the origin in the bottom left corner of the image 
+    frame.write_tga_file("framebuffer.tga");
+    return 0;
+}
+void main(int argc, char** argv) {
+    draw_triangle();
 
 }
