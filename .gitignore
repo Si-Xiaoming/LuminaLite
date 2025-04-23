@@ -4,3 +4,4 @@
 build.bat
 
 build_ninja/
+src/basicRender/bresenham_sample.cu
