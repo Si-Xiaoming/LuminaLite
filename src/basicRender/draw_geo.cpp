@@ -67,5 +67,6 @@ Vec3f DrawGeo::barycentric(Vec2i* pts, Vec2i P)
 	Vec3f c = u ^ v;
 	if (abs(c.z) < 1) return Vec3f(-1, 1, 1);
 	return Vec3f(1.f - (c.x + c.y) / c.z, c.y / c.z, c.x / c.z);
+
 }
 

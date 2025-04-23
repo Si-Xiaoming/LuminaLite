@@ -34,6 +34,33 @@ int draw_line() {
     return 0;
 }
 
+int flat_shading_render() {
+    const TGAColor white = TGAColor(255, 255, 255, 255);
+    const TGAColor red = TGAColor(255, 0, 0, 255);
+
+    const int width = 800;
+    const int height = 800;
+    Model* model = NULL;
+    DrawGeo drawGeo;
+    TGAImage image(width, height, TGAImage::RGB);
+    model = new Model("data/models/african_head.obj");
+    
+    for (int i = 0; i < model->nfaces(); i++) {
+        std::vector<int> face = model->face(i);
+        Vec2i screen_coords[3];
+        for (int j = 0; j < 3; j++) {
+            Vec3f world_coords = model->vert(face[j]);
+            screen_coords[j] = Vec2i((world_coords.x + 1.) * width / 2., (world_coords.y + 1.) * height / 2.);
+        }
+
+        drawGeo.drawTriangle(screen_coords, image, TGAColor(rand() % 255, rand() % 255, rand() % 255, 255));
+    }
+    image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
+    image.write_tga_file("flat_shading_render.tga");
+    delete model;
+    return 0;
+}
+
 
 int draw_triangle() {
 	TGAImage frame(200, 200, TGAImage::RGB);
@@ -45,7 +72,40 @@ int draw_triangle() {
     frame.write_tga_file("framebuffer.tga");
     return 0;
 }
+int draw_triangle_add_light() {
+    const TGAColor white = TGAColor(255, 255, 255, 255);
+    const TGAColor red = TGAColor(255, 0, 0, 255);
+
+    const int width = 800;
+    const int height = 800;
+    Model* model = NULL;
+    DrawGeo drawGeo;
+    TGAImage image(width, height, TGAImage::RGB);
+    model = new Model("data/models/african_head.obj");
+    Vec3f light_dir(0, 0, -1); // define light_dir
+
+    for (int i = 0; i < model->nfaces(); i++) {
+        std::vector<int> face = model->face(i);
+        Vec2i screen_coords[3];
+        Vec3f world_coords[3];
+        for (int j = 0; j < 3; j++) {
+            Vec3f v = model->vert(face[j]);
+            screen_coords[j] = Vec2i((v.x + 1.) * width / 2., (v.y + 1.) * height / 2.);
+            world_coords[j] = v;
+        }
+        Vec3f n = (world_coords[2] - world_coords[0]) ^ (world_coords[1] - world_coords[0]);
+        n.normalize();
+        float intensity = n * light_dir;
+        if (intensity > 0) {
+            drawGeo.drawTriangle(screen_coords, image, TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
+        }
+    }
+    image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
+    image.write_tga_file("triangle_add_light.tga");
+    delete model;
+    return 0;
+}
 void main(int argc, char** argv) {
-    draw_triangle();
+    draw_triangle_add_light();
 
 }
