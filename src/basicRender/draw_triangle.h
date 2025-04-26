@@ -32,7 +32,9 @@ int draw_line() {
     delete model;
     return 0;
 }
-
+Vec3f world2screen(Vec3f v, int width = 800, int height = 800) {
+    return Vec3f(int((v.x + 1.) * width / 2. + .5), int((v.y + 1.) * height / 2. + .5), v.z);
+}
 int flat_shading_render() {
     const TGAColor white = TGAColor(255, 255, 255, 255);
     const TGAColor red = TGAColor(255, 0, 0, 255);
